@@ -66,7 +66,7 @@ cursor:pointer;
 <script src="res/js/jquery-3.4.1.min.js"></script>
 <script>
 var curTurn = 0; //현재 턴 저장
-
+//커밋 됩니까
 var row1 = [];
 var row2 = [];
 var row3 = [];
