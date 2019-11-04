@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="osel.test.gameboard.dao.mapper.BoardMapper">
+	<!-- 로비 > 채팅방 입장의 문제[수정필] -->
+	<select id="getBoard" parameterType="int" resultType="gameboard">
+		select game_id gameId,game_status gameStatus,game_turn gameTurn,row1,row2,row3,row4,row5,row6,row7,row8
+		from gameboard
+		where game_id=#{gameId}
+	</select>
+	<insert id="makeRoom">
+		insert into gameboard
+		(game_id,game_status,game_turn,row1,row2,row3,row4,row5,row6,row7,row8)
+		values((select max(game_id)+1 from gameboard),0,0,'00000000','00000000','00000000','00021000','00012000','00000000','00000000','00000000')
+	</insert>
+	
+	<!-- 게임 시작 전 불림 (onclick시 update, 지속적으로 상태 select) -->
+	<update id="blackReady" parameterType="int">
+		update gameboard set black_status=1 where game_id=#{gameId}
+	</update>
+	<update id="whiteReady" parameterType="int">
+		update gameboard set white_status=1 where game_id=#{gameId}
+	</update>
+	<select id="loadReadyStatus" parameterType="int"  resultType="gameboard">
+		select game_headcount gameHeadcount, game_blackuser gameBlackuser, game_whiteuser gameWhiteuser, game_turn gameTurn, black_status blackStatus, white_status whiteStatus
+		from gameboard
+		where game_id=#{gameId}
+	</select>
+	
+	<!-- 게임 시작시 [단 한 번만] 불림 -->
+	<update id="startGame" parameterType="int">
+		update gameboard set game_turn=1, game_status=1 where game_id=#{gameId}
+	</update>
+	
+	<!-- 돌이 놓일 시 -->
+	<update id="updateBoard" parameterType="gameboard">
+		update gameboard
+		set row1=#{row1},row2=#{row2},row3=#{row3},row4=#{row4},row5=#{row5},row6=#{row6},row7=#{row7},row8=#{row8},game_turn=game_turn+1
+		where game_id=#{gameId}
+	</update>
+	
+	<!-- 인게임 중 실시간 select(ajax 통신을 위함) -->
+	
+</mapper>
